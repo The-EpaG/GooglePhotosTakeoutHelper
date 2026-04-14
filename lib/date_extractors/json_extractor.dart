@@ -37,6 +37,7 @@ Future<File?> _jsonForFile(File file, {required bool tryhard}) async {
     // none
     (String s) => s,
     _supplementalMetadataSuffix,
+    _supplementalMetadSuffix,
     _shortenName,
     // test: combining this with _shortenName?? which way around?
     _bracketSwap,
@@ -51,6 +52,11 @@ Future<File?> _jsonForFile(File file, {required bool tryhard}) async {
     ]
   ]) {
     final jsonFile = File(p.join(dir.path, '${method(name)}.json'));
+    if (name == "VID_20550703_142558_791.mp4"){
+      print(name);
+      print(jsonFile.path);
+      print(await jsonFile.exists());
+    }
     if (await jsonFile.exists()) return jsonFile;
   }
   return null;
@@ -109,6 +115,8 @@ String _shortenName(String filename) => '$filename.json'.length > 51
     : filename;
 
 String _supplementalMetadataSuffix(String filename) => '$filename.supplemental-metadata';
+
+String _supplementalMetadSuffix(String filename) => '$filename.supplemental-metad';
 
 // thanks @casualsailo and @denouche for bringing attention!
 // https://github.com/TheLastGimbus/GooglePhotosTakeoutHelper/issues/188
