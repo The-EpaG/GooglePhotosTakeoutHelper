@@ -57,13 +57,11 @@ Future<String> askForInt() async => stdin
 
 Future<void> greet() async {
   print('GooglePhotosTakeoutHelper v$version');
-  await sleep(1);
   print('Hi there! This tool will help you to get all of your photos from '
       'Google Takeout to one nice tidy folder\n');
-  await sleep(3);
   print('(If any part confuses you, read the guide on:\n'
       'https://github.com/TheLastGimbus/GooglePhotosTakeoutHelper )');
-  await sleep(3);
+  await sleep(1);
 }
 
 /// does not quit explicitly - do it yourself
@@ -88,16 +86,14 @@ Future<void> nothingFoundMessage() async {
 Future<Directory> getInputDir() async {
   print('Select the directory where you unzipped all your takeout zips');
   print('(Make sure they are merged => there is only one "Takeout" folder!)');
-  await sleep(1);
   pressEnterToContinue();
   final dir = await getDirectoryPath(dialogTitle: 'Select unzipped folder:');
-  await sleep(1);
   if (dir == null) {
     error('Duh, something went wrong with selecting - try again!');
     return getOutput();
   }
   print('Cool!');
-  sleep(1);
+  await sleep(1);
   return Directory(dir);
 }
 
@@ -152,16 +148,14 @@ Future<List<File>> getZips() async {
 Future<Directory> getOutput() async {
   print('Now, select output folder - all photos will be moved there\n'
       '(note: GPTH will *move* your photos - no extra space will be taken ;)');
-  await sleep(1);
   pressEnterToContinue();
   final dir = await getDirectoryPath(dialogTitle: 'Select output folder:');
-  await sleep(1);
   if (dir == null) {
     error('Duh, something went wrong with selecting - try again!');
     return getOutput();
   }
   print('Cool!');
-  sleep(1);
+  await sleep(1);
   return Directory(dir);
 }
 
@@ -256,7 +250,7 @@ Future<void> freeSpaceNotice(int required, Directory dir) async {
       'you have ${filesize(freeSpace)} free so should be fine :)',
     );
   }
-  await sleep(3);
+  await sleep(1);
   pressEnterToContinue();
 }
 

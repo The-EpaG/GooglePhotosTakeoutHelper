@@ -43,24 +43,64 @@ final _commonDatetimePatterns = [
         r'(?<date>(20|19|18)\d{2}_(01|02|03|04|05|06|07|08|09|10|11|12)_[0-3]\d_\d{2}_\d{2}_\d{2})'),
     'YYYY_MM_DD_hh_mm_ss',
   ],
+  [
+    RegExp(
+        r'(?<date>(20|19|18)\d{2}-(01|02|03|04|05|06|07|08|09|10|11|12)-[0-3]\d_\d{2}-\d{2}-\d{2})'),
+    'YYYY-MM-DD_hh-mm-ss',
+  ],
+  [
+    RegExp(
+        r'(?<date>(20|19|18)\d{2}(01|02|03|04|05|06|07|08|09|10|11|12)[0-3]\d)'),
+    'YYYYMMDD',
+  ],
+  [
+    RegExp(
+        r'(?<date>(20|19|18)\d{2}-(01|02|03|04|05|06|07|08|09|10|11|12)-[0-3]\d)'),
+    'YYYY-MM-DD',
+  ],
+  [
+    RegExp(r'(?<date>\d{2}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})'),
+    'YY-MM-DD_hh-mm-ss',
+  ],
+  // Esempio: PicsArt_12-15-04.09.36.jpg (Mese-Giorno-Anno.Ora.Minuto)
+  [
+    RegExp(r'(?<date>\d{2}-\d{2}-\d{2}\.\d{2}\.\d{2})'),
+    'YY-DD-MM.hh.mm',
+  ],
 ];
 
 /// Guesses DateTime from [file]s name
 /// - for example Screenshot_20190919-053857.jpg - we can guess this 😎
 Future<DateTime?> guessExtractor(File file) async {
+  final fileName = p.basename(file.path);
+
   for (final pat in _commonDatetimePatterns) {
-    // extract date str with regex
-    final match = (pat.first as RegExp).firstMatch(p.basename(file.path));
+    final regex = pat.first as RegExp;
+    final formatPattern = pat.last as String;
+
+    final match = regex.firstMatch(fileName);
     final dateStr = match?.group(0);
+
     if (dateStr == null) continue;
-    // parse it with given pattern
-    DateTime? date;
+
     try {
-      date = FixedDateTimeFormatter(pat.last as String, isUtc: false)
+      var date = FixedDateTimeFormatter(formatPattern, isUtc: false)
           .tryDecode(dateStr);
-    } on RangeError catch (_) {}
-    if (date == null) continue;
-    return date; // success!
+
+      if (date != null) {
+        if (date.year < 100) {
+          date = DateTime(
+            date.year + 2000,
+            date.month,
+            date.day,
+            date.hour,
+            date.minute,
+            date.second,
+          );
+        }
+        return date;
+      }
+    } catch (_) {}
   }
-  return null; // none matched
+  return null;
 }

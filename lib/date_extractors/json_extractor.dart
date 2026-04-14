@@ -36,6 +36,7 @@ Future<File?> _jsonForFile(File file, {required bool tryhard}) async {
   for (final method in [
     // none
     (String s) => s,
+    _supplementalMetadataSuffix,
     _shortenName,
     // test: combining this with _shortenName?? which way around?
     _bracketSwap,
@@ -106,6 +107,8 @@ String _removeExtraRegex(String filename) {
 String _shortenName(String filename) => '$filename.json'.length > 51
     ? filename.substring(0, 51 - '.json'.length)
     : filename;
+
+String _supplementalMetadataSuffix(String filename) => '$filename.supplemental-metadata';
 
 // thanks @casualsailo and @denouche for bringing attention!
 // https://github.com/TheLastGimbus/GooglePhotosTakeoutHelper/issues/188
